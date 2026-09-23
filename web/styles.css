@@ -1,27 +1,28 @@
 /* «Точно к месту»: каталог и поиск, вдохновлённые приёмами Airbnb. */
 :root,[data-design="atelier"] {
-  --bg:#fff;
-  --surface:#fff;
-  --surface-2:#f7f5f2;
-  --input:#fff;
-  --ink:#242424;
-  --muted:#646464;
-  --accent:#a74732;
-  --accent-hover:#8b3321;
+  --bg:#f8f6f0;
+  --surface:#fffdf8;
+  --surface-2:#edece3;
+  --input:#fffdf8;
+  --ink:#342e28;
+  --muted:#6c685d;
+  --accent:#576348;
+  --accent-hover:#414d35;
   --on-accent:#fff;
-  --brass:#a74732;
-  --line:#e6e3df;
+  --brass:#8b7754;
+  --line:#dddacf;
   --good:#35563d;
   --good-bg:#edf4ec;
   --error:#9e2929;
   --error-bg:#fff0ed;
-  --focus:#a74732;
+  --focus:#576348;
   --art-bg:#e9e1d8;
-  --soft:#f5e9e2;
+  --soft:#e9eddf;
   --skeleton:#e4dfd9;
   --overlay:#15151559;
   --shadow:0 3px 6px #22222208,0 12px 28px #2222220d;
   --float-shadow:0 12px 48px #22222229;
+  --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Manrope','Segoe UI',sans-serif;
   --radius:24px;
   --ease:cubic-bezier(.22,1,.36,1);
@@ -164,7 +165,7 @@ svg {
 .brand {
   display:inline-flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
   font-size:22px;
   font-weight:800;
   letter-spacing:-1px;
@@ -173,15 +174,16 @@ svg {
 .brand:hover {
   text-decoration:none
 }
-.brand>span:first-child {
-  font-size:38px;
+.brand .brand-mark {
+  width:40px;
+  height:40px;
   color:var(--accent);
-  line-height:1
+  stroke-width:3.1;
+  transition:transform .3s var(--ease);
 }
-.brand .brand-dot {
-  color:var(--accent);
-  margin-left:-8px
-}
+.brand-wordmark {line-height:1.1}
+.brand:hover .brand-mark {transform:rotate(-6deg)}
+footer .brand .brand-mark {width:30px;height:30px}
 .header-nav {
   display:flex;
   align-items:center;
@@ -1276,8 +1278,9 @@ footer>span {
     font-size:17px;
     letter-spacing:-.6px
   }
-  .brand>span:first-child {
-    font-size:28px
+  .brand .brand-mark {
+    width:32px;
+    height:32px
   }
   .design-buttons button {
     font-size:9px;
