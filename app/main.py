@@ -11,6 +11,7 @@ from app.config import ROOT, Settings
 from app.data import load_contractors, catalog_options
 from app.models import LegacyRequest, LegacyResponse, RecommendRequest, RecommendResponse
 from app.pipeline import RecommendationService
+from app.venues import venue_catalog
 
 
 def legacy_response(result: RecommendResponse) -> LegacyResponse:
@@ -68,6 +69,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if request.app.state.demo is None:
             return JSONResponse(status_code=503, content={'message': 'Сначала выполните python scripts/find_demo_queries.py'})
         return request.app.state.demo
+
+    @application.get('/api/venues')
+    async def venues(request: Request, city: str | None = None) -> dict:
+        """Обзор цен, не подбор: бюджет и доступность не проверяются."""
+        return venue_catalog(request.app.state.service.rows, city)
 
     @application.get('/api/health')
     async def health(request: Request) -> dict:

@@ -4,6 +4,7 @@ import re
 from app.data import Contractor
 from app.filters import money
 from app.models import Card, Fact, RecommendRequest
+from app.venues import VENUE_CATEGORIES, venue_name
 
 WEIGHTS = dict(budget_fit=0.30, format_focus=0.25, language_bonus=0.10,
                duration_margin=0.10, semantic=0.25, synthetic_penalty=-0.03,
@@ -88,6 +89,7 @@ def build_cards(selected: list[Contractor], eligible: list[Contractor], group: l
             facts.append(Fact(type='duration', text=('Длительность присутствия не применяется'
                 if c.max_hours is None else f'До {c.max_hours:g} ч при запросе {req.duration_hours:g} ч')))
         cards.append(Card(rank=index+1, id=c.id, name=c.name, category=req.category,
+                          venue_name=venue_name(c) if req.category in VENUE_CATEGORIES else None,
                           categories=list(c.categories), city=c.city, price_from_kzt=c.price_from_kzt,
                           price_imputed=c.price_imputed, city_imputed=c.city_imputed, synthetic=c.synthetic,
                           languages=list(c.languages), max_hours=c.max_hours, facts=facts, profile_excerpt=quote))

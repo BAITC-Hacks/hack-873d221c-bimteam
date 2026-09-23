@@ -9,7 +9,13 @@ if (-not (Test-Path -LiteralPath $venvPython)) {
         if (Get-Command $candidate -ErrorAction SilentlyContinue) {
             $candidateArguments = @()
             if ($candidate -eq 'py') { $candidateArguments = @('-3') }
-            & $candidate @candidateArguments -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)' 2>$null
+            try {
+                # Windows PowerShell 5.1 treats stderr from Store aliases as an error.
+                # An unavailable candidate must not prevent trying the next Python.
+                $probeOutput = & $candidate @candidateArguments -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)' 2>&1
+            } catch {
+                continue
+            }
             if ($LASTEXITCODE -eq 0) {
                 $chosenCommand = $candidate
                 $chosenArguments = $candidateArguments

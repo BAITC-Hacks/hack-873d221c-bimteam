@@ -119,6 +119,7 @@ async function init() {
   } finally { waiting(false); document.dispatchEvent(new CustomEvent('recommend:ready')); }
 }
 function renderCard(card, index, query) {
+  const displayName = card.venue_name || card.name;
   const article = node('article', undefined, 'card');
   article.dataset.contractorId = card.id;
   article.tabIndex = -1;
@@ -127,10 +128,10 @@ function renderCard(card, index, query) {
   cover.append(node('span','Подходит по условиям','cover-label'),node('span','Иллюстрация категории','cover-caption'));
   article.append(cover);
   const header = node('div', undefined, 'card-head');
-  const avatar = node('div', card.name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join(''), 'avatar');
+  const avatar = node('div', displayName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join(''), 'avatar');
   avatar.setAttribute('aria-hidden','true');
   const title = node('div', undefined, 'card-title');
-  title.append(node('h3',card.name),node('p',`${card.category} · ${card.city}`,'card-meta'));
+  title.append(node('h3',displayName),node('p',`${card.category} · ${card.city}`,'card-meta'));
   header.append(avatar,title,node('span',String(index+1).padStart(2,'0'),'rank'));
   const priceRow = node('div',undefined,'price-row');
   const price = node('div',undefined,'price');
@@ -157,10 +158,11 @@ function renderCard(card, index, query) {
     quote.append(node('strong','ИЗ ПРОФИЛЯ'),document.createTextNode(card.profile_excerpt));
     const details = node('details', undefined, 'profile-details');
     const summary = node('summary','Подробнее — выдержка из профиля');
-    summary.setAttribute('aria-label', `Профиль ${card.name}: подробнее`);
+    summary.setAttribute('aria-label', `Профиль ${displayName}: подробнее`);
     details.append(summary,quote); article.append(details);
   }
   const notes = node('div',undefined,'data-notes');
+  if (card.venue_name) notes.append(node('span',`Профиль: ${card.name} · ${card.id}`));
   notes.append(node('span',card.synthetic ? 'Синтетический профиль' : 'Исходный профиль · имя изменено',card.synthetic ? 'synthetic' : ''));
   if(card.price_imputed) notes.append(node('span','Цена проставлена при подготовке данных'));
   if(card.city_imputed) notes.append(node('span','Город проставлен при подготовке данных'));

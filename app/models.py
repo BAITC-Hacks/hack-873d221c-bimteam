@@ -52,6 +52,7 @@ class Card(BaseModel):
     rank: int
     id: str
     name: str
+    venue_name: str | None = None
     category: str
     categories: list[str]
     city: str

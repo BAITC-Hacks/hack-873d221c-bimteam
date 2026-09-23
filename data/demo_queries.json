@@ -23,6 +23,7 @@
           "rank": 1,
           "id": "HK-75012",
           "name": "Джинбей",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -71,6 +72,7 @@
           "rank": 2,
           "id": "HK-27222",
           "name": "Сон Гоку",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -115,6 +117,7 @@
           "rank": 3,
           "id": "HK-77838",
           "name": "Хаул",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -275,6 +278,7 @@
           "rank": 1,
           "id": "HK-75012",
           "name": "Джинбей",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -323,6 +327,7 @@
           "rank": 2,
           "id": "HK-77838",
           "name": "Хаул",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -371,6 +376,7 @@
           "rank": 3,
           "id": "HK-88430",
           "name": "Куррапика",
+          "venue_name": null,
           "category": "Ведущий",
           "categories": [
             "Ведущий"
@@ -533,6 +539,7 @@
           "rank": 1,
           "id": "HK-90002",
           "name": "Хаку",
+          "venue_name": null,
           "category": "Флорист",
           "categories": [
             "Флорист"

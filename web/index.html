@@ -53,6 +53,7 @@
         <div class="form-footnotes"><p class="field-note" id="budget-note">Бюджет за всё мероприятие. Цены в каталоге — «от».</p><p id="saved-note" class="field-note" role="status">Условия сохраняются в этом браузере.</p></div>
       </fieldset></form>
       <p class="catalog-note" id="catalog-note">Загружаем доступные параметры…</p><button id="reload" class="text-button" type="button" hidden>Повторить загрузку</button>
+      <button id="venue-browse" class="venue-browse" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Zm6-3v15m6-12v15"/></svg>Все площадки города и цены на карте <span aria-hidden="true">↗</span></button>
     </section>
     <nav class="category-nav" aria-label="Быстрый выбор категории">
       <button type="button" data-category="Ведущий" disabled><span class="category-art art-host" aria-hidden="true"></span>Ведущий</button>
@@ -73,6 +74,12 @@
           <button type="button" id="venue-map-view" aria-pressed="true" aria-controls="venue-map-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Zm6-3v15m6-12v15"/></svg>Карта</button>
         </div>
       </div>
+      <div id="venue-catalog-intro" class="venue-catalog-intro" hidden>
+        <p class="section-label">СРАВНИТЕ ПЛОЩАДКИ</p><h2 id="venue-catalog-title">Места для вашего события</h2>
+        <p id="venue-catalog-summary" role="status" aria-live="polite"></p>
+        <p class="venue-catalog-note">Все площадки выбранного города, по возрастанию цены. Дата, бюджет и другие условия здесь не отсекают варианты. Названия и цены — из анонимизированного датасета.</p>
+        <button type="submit" form="search" class="text-button">Проверить по моим условиям →</button>
+      </div>
       <div id="venue-results-layout">
         <div id="venue-map-home">
           <section id="venue-map-panel" class="venue-map-panel" aria-label="Карта площадок с ценами" hidden>
@@ -90,6 +97,7 @@
           </section>
         </div>
         <div id="results" aria-label="Подходящие подрядчики"></div>
+        <div id="venue-catalog" aria-label="Все площадки города для сравнения цен" hidden></div>
       </div>
       <aside id="rejections" class="rejections" hidden><h3>Что повлияло на выбор</h3><div id="reason-list"></div><p>Каждый исключённый профиль учитывается один раз — по первому условию, которое он не прошёл.</p></aside>
     </section>
