@@ -130,11 +130,29 @@ function renderCard(card, index, query) {
   const price = node('div',undefined,'price');
   price.append(node('small','от '),document.createTextNode(`${money(card.price_from_kzt)} ₸`));
   priceRow.append(price,node('span',`Свободен ${dateLabel(query.date)}`,'date-badge'));
-  article.append(header,priceRow,node('p','ПОЧЕМУ ПОДХОДИТ','explanation-title'),node('p',card.explanation,'explanation'));
+  article.append(header,priceRow,node('p','Подходит по заданным условиям','match-badge'),node('p','ПОЧЕМУ ПОДХОДИТ','explanation-title'),node('p',card.explanation,'explanation'));
+  const facts = node('ul', undefined, 'card-facts');
+  const budgetFact = card.price_from_kzt <= query.budget
+    ? `Цена от ${money(card.price_from_kzt)} ₸ при бюджете ${money(query.budget)} ₸`
+    : 'Итоговую стоимость нужно уточнить';
+  for (const text of [budgetFact, `Формат: ${query.event_format}${query.language ? ' · язык: '+query.language : ''}`]) {
+    const fact = node('li');
+    const icon = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    icon.setAttribute('viewBox','0 0 24 24'); icon.setAttribute('class','line-icon');
+    icon.setAttribute('fill','none'); icon.setAttribute('stroke','currentColor');
+    icon.setAttribute('stroke-width','1.5'); icon.setAttribute('aria-hidden','true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','m5 12 4 4L19 6'); icon.append(path);
+    fact.append(icon,node('span',text)); facts.append(fact);
+  }
+  article.append(facts);
   if(card.profile_excerpt) {
     const quote = node('blockquote',undefined,'profile-quote');
     quote.append(node('strong','ИЗ ПРОФИЛЯ'),document.createTextNode(card.profile_excerpt));
-    article.append(quote);
+    const details = node('details', undefined, 'profile-details');
+    const summary = node('summary','Подробнее — выдержка из профиля');
+    summary.setAttribute('aria-label', `Подробнее о ${card.name}: выдержка из профиля`);
+    details.append(summary,quote); article.append(details);
   }
   const notes = node('div',undefined,'data-notes');
   notes.append(node('span',card.synthetic ? 'Синтетический профиль' : 'Исходный профиль · имя изменено',card.synthetic ? 'synthetic' : ''));

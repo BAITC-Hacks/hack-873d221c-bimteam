@@ -11,7 +11,7 @@
     document.querySelectorAll('[data-design-choice]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.designChoice === design));
     });
-    document.querySelector('meta[name="theme-color"]').content = design === 'signal' ? '#101513' : '#f7f2e9';
+    document.querySelector('meta[name="theme-color"]').content = design === 'signal' ? '#111720' : '#f5f0e7';
   }
   let saved = 'atelier';
   try { saved = localStorage.getItem('bimteam.design') || saved; } catch { /* Хранилище необязательно. */ }
