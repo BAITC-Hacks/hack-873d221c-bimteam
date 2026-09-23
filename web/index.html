@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/web/favicon.svg?v=2"><link rel="stylesheet" href="/web/styles.css"><link rel="stylesheet" href="/web/editorial.css"><link rel="stylesheet" href="/web/city-picker.css">
   <script src="/web/designs.js" defer></script>
+  <link rel="stylesheet" href="/web/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/web/venue-map.css">
 </head>
 <body>
 <a class="skip-link" href="#form-title">Перейти к подбору</a>
@@ -60,11 +62,35 @@
     </nav>
     <section class="results-panel" aria-labelledby="results-title" aria-busy="false">
       <div class="results-heading"><div><p class="section-label">ПОДБОР ПОД ВАШИ УСЛОВИЯ</p><h2 id="results-title">Выбор с объяснением</h2></div><span class="count" id="result-count">до 3 вариантов</span></div>
-      <div class="presets" aria-label="Примеры запросов"><span>Примеры:</span><button type="button" data-preset="host" disabled>Ведущий</button><button type="button" data-preset="florist" disabled>Флорист</button><button type="button" data-preset="empty" disabled>Без совпадений</button></div>
+      <div class="presets" aria-label="Примеры запросов"><span>Примеры:</span><button type="button" data-preset="host" disabled>Ведущий</button><button type="button" data-preset="florist" disabled>Флорист</button><button type="button" data-preset="venue" disabled>Площадки на карте</button><button type="button" data-preset="empty" disabled>Без совпадений</button></div>
       <p id="query-summary" class="query-summary" hidden></p><div id="status" role="status" aria-live="polite">Загрузка каталога…</div>
       <div id="empty-state" class="empty-state"><div class="empty-illustration" aria-hidden="true"><span class="mini-card art-host"></span><span class="mini-card art-florist"></span><span class="mini-card art-photo"></span></div><div><span class="section-label">МЕНЬШЕ ПОИСКА. БОЛЬШЕ СОВПАДЕНИЙ.</span><h3 id="empty-title">Найдём тех, кто подходит</h3><p id="empty-copy">Выберите условия. Здесь появится короткий список с конкретными причинами — почему именно эти подрядчики.</p><div class="steps"><span>Ваши условия</span><b aria-hidden="true">→</b><span>Проверка</span><b aria-hidden="true">→</b><span>Ваш выбор</span></div></div></div>
       <div class="skeletons" aria-hidden="true"><div class="skeleton-card"><span></span><span></span><span></span><span></span></div><div class="skeleton-card"><span></span><span></span><span></span><span></span></div><div class="skeleton-card"><span></span><span></span><span></span><span></span></div></div>
-      <div id="results" aria-label="Подходящие подрядчики"></div>
+      <div id="venue-view-tools" class="venue-view-tools" hidden>
+        <p>Место, где всё сложится<span>Сравните цены и откройте подробности площадки.</span></p>
+        <div class="venue-view-switch" role="group" aria-label="Вид результатов">
+          <button type="button" id="venue-list-view" aria-pressed="false" aria-controls="results"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Список</button>
+          <button type="button" id="venue-map-view" aria-pressed="true" aria-controls="venue-map-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Zm6-3v15m6-12v15"/></svg>Карта</button>
+        </div>
+      </div>
+      <div id="venue-results-layout">
+        <div id="venue-map-home">
+          <section id="venue-map-panel" class="venue-map-panel" aria-label="Карта площадок с ценами" hidden>
+            <div class="map-disclosure"><strong id="map-mode-label">ДЕМО-КАРТА</strong><p id="map-disclosure-copy">Расположение условное. Цены — из каталога.</p></div>
+            <div class="map-stage">
+              <div id="venue-map" role="region" aria-label="Карта площадок. Стрелки — перемещение, плюс и минус — масштаб." tabindex="0"></div>
+              <div class="map-actions" aria-label="Управление картой">
+                <button type="button" id="map-expand" aria-label="Развернуть карту"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-6 6M10 20H4v-6m0 6 6-6"/></svg></button>
+                <button type="button" id="map-fit" aria-label="Показать все площадки"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <div class="map-zoom"><button type="button" id="map-zoom-in" aria-label="Приблизить карту">+</button><button type="button" id="map-zoom-out" aria-label="Отдалить карту">−</button></div>
+              </div>
+              <div id="map-empty" class="map-empty" hidden><strong>Пока нет точек</strong><p id="map-empty-copy"></p></div>
+            </div>
+            <div class="map-footer"><p id="map-status" role="status" aria-live="polite">Загружаем карту…</p><button id="map-retry" type="button" hidden>Повторить</button></div>
+          </section>
+        </div>
+        <div id="results" aria-label="Подходящие подрядчики"></div>
+      </div>
       <aside id="rejections" class="rejections" hidden><h3>Что повлияло на выбор</h3><div id="reason-list"></div><p>Каждый исключённый профиль учитывается один раз — по первому условию, которое он не прошёл.</p></aside>
     </section>
   </div>
@@ -78,5 +104,7 @@
 </main>
 <div class="mobile-cta"><button class="primary" id="mobile-submit" type="submit" form="search" disabled><span>Подобрать подрядчиков</span><span aria-hidden="true">↗</span></button></div>
 <dialog id="control-dialog" class="control-dialog" aria-labelledby="control-title"><div class="dialog-heading"><h2 id="control-title">Выберите параметр</h2><button type="button" id="close-control" aria-label="Закрыть окно выбора">×</button></div><div id="control-content"></div></dialog>
+<dialog id="venue-map-dialog" class="venue-map-dialog" aria-labelledby="map-dialog-title"><div class="map-dialog-heading"><h2 id="map-dialog-title">Площадки на карте</h2><button id="map-close" type="button" aria-label="Закрыть развёрнутую карту">×</button></div></dialog>
 <script src="/web/app.js" defer></script><script src="/web/enhancements.js" defer></script>
+<script type="module" src="/web/venue-map.js"></script>
 </body></html>

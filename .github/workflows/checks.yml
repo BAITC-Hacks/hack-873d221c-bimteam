@@ -17,8 +17,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - run: python -m pip install -r requirements.txt
       - run: pytest -q
+      - run: node --test tests/map-data.test.mjs
+      - run: node --check web/app.js
+      - run: node --check web/enhancements.js
+      - run: node --check web/venue-map.js
       - run: python scripts/find_demo_queries.py
       - run: git diff --exit-code -- data/demo_queries.json data/demo_requests
       - run: python scripts/run.py --check

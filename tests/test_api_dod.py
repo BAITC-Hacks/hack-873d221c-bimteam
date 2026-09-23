@@ -176,6 +176,33 @@ def test_legacy_error_fields_use_form_names(client):
     assert 'event_format' in response.json()['fields']
 
 
+def test_venue_map_assets_and_preset_use_current_backend(client):
+    for path in ('/web/venue-map.js', '/web/map-data.mjs', '/web/venue-map.css',
+                 '/web/vendor/leaflet/leaflet.js', '/web/vendor/leaflet/leaflet.css',
+                 '/web/data/venue-locations.json'):
+        assert client.get(path).status_code == 200
+    html = client.get('/').text
+    assert 'Площадки на карте' in html and 'ДЕМО-КАРТА' in html
+    source = client.get('/web/data/venue-locations.json').json()
+    rows = {row.id: row for row in client.app.state.service.rows}
+    assert source['version'] == 1
+    for identity, place in source['locations'].items():
+        assert identity in rows
+        assert place['city'] == rows[identity].city
+        assert place['kind'] == 'demo'
+        assert -85 <= place['lat'] <= 85 and -180 <= place['lng'] <= 180
+    request = dict(city='Алматы', category='Банкетный зал', event_format='свадьба',
+                   date='2026-10-10', budget=6_000_000, language=None, duration_hours=None)
+    response = client.post('/api/recommend', json=request)
+    assert response.status_code == 200
+    body = response.json()
+    assert body['status'] == 'ok' and len(body['results']) == 3
+    for card in body['results']:
+        assert card['id'] in source['locations']
+        assert card['price_from_kzt'] == rows[card['id']].price_from_kzt
+        assert date.fromisoformat(request['date']) not in rows[card['id']].busy_dates
+
+
 def test_options_health_demo_static_and_openapi(client):
     for path in ('/', '/web/app.js', '/web/styles.css', '/web/enhancements.js',
                  '/web/designs.js', '/web/editorial.css', '/web/city-picker.css',
