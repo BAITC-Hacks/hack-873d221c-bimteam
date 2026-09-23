@@ -10,12 +10,12 @@
 
 Нужны Python 3.11+, Git и доступ к репозиторию. Для первой установки зависимостей потребуется интернет. Node.js и API-ключи для базового запуска не нужны.
 
-Текущая версия бэкенда находится в ветке `abzal/filters`. До её объединения с `main` используйте команды ниже.
+Актуальная общая версия находится в ветке `main`: новый бэкенд, интерфейс «Той таңдау» и документация запуска собраны вместе.
 
 **Windows — PowerShell:**
 
 ```powershell
-git clone --branch abzal/filters https://github.com/BAITC-Hacks/hack-873d221c-bimteam.git
+git clone --branch main https://github.com/BAITC-Hacks/hack-873d221c-bimteam.git
 cd hack-873d221c-bimteam
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start.ps1
 ```
@@ -23,7 +23,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start.ps1
 **Linux / macOS:**
 
 ```sh
-git clone --branch abzal/filters https://github.com/BAITC-Hacks/hack-873d221c-bimteam.git
+git clone --branch main https://github.com/BAITC-Hacks/hack-873d221c-bimteam.git
 cd hack-873d221c-bimteam
 sh scripts/start.sh
 ```
@@ -38,7 +38,7 @@ sh scripts/start.sh
 
 Если команда `py` не найдена, установите Python 3.11+ с [python.org](https://www.python.org/downloads/), включите добавление Python в PATH и откройте терминал заново. Python 2.6 не подходит. На Linux может потребоваться пакет `python3-venv`.
 
-Без Git можно [скачать ZIP текущей версии](https://github.com/BAITC-Hacks/hack-873d221c-bimteam/archive/refs/heads/abzal%2Ffilters.zip), распаковать его и выполнить команду запуска из папки с README. Для закрытого репозитория необходим вход в GitHub.
+Без Git можно [скачать ZIP текущей версии](https://github.com/BAITC-Hacks/hack-873d221c-bimteam/archive/refs/heads/main.zip), распаковать его и выполнить команду запуска из папки с README. Для закрытого репозитория необходим вход в GitHub.
 
 ## Что делает сервис
 
