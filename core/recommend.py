@@ -2,6 +2,7 @@
 from collections import Counter
 from datetime import date
 from pydantic import BaseModel, Field, field_validator
+from core.explanations import explanation, profile_evidence
 
 START = date(2026, 9, 23)
 END = date(2026, 12, 31)
@@ -60,20 +61,13 @@ def recommend(query, catalog):
     eligible.sort(key=lambda r: (r['price_from_kzt'], r['id']))
     results = []
     for row in eligible[:3]:
-        facts = [f"свободен {query.date.strftime('%d.%m.%Y')}",
-                 f"работает с форматом «{query.event_format}»",
-                 f"цена от {row['price_from_kzt']:,} ₸ при бюджете {query.budget:,} ₸".replace(',', ' ')]
-        if query.language:
-            facts.append(f"язык — {query.language}")
-        if query.duration_hours is not None:
-            facts.append('длительность присутствия не применяется' if row['max_hours'] is None else f"может работать до {row['max_hours']:g} ч при запросе {query.duration_hours:g} ч")
-        excerpt = row['description'].split('. ')[0][:280].strip()
+        excerpt = profile_evidence(row['description'], query)
         results.append({
             'id': row['id'], 'name': row['anon_name'], 'category': query.category,
             'city': row['city'], 'price_from_kzt': row['price_from_kzt'],
             'synthetic': row['synthetic'], 'city_imputed': row['city_imputed'],
             'price_imputed': row['price_imputed'],
-            'explanation': '; '.join(facts).capitalize() + '.',
+            'explanation': explanation(row, query, candidates, eligible, excerpt),
             'profile_excerpt': excerpt, 'explanation_source': 'rules',
         })
     status = 'ok' if results else ('no_matches' if candidates else 'no_category_in_city')
