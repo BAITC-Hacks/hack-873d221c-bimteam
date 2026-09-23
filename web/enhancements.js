@@ -188,7 +188,7 @@
     if(focusDay) grid.querySelector('[tabindex="0"]')?.focus();
   }
   function open(field,trigger) {
-    if(fieldset.disabled) return;
+    if(fieldset.disabled || dialog.open) return;
     activeField=field; activeTrigger=trigger;
     const isCity=field.name==='city';
     dialog.classList.toggle('city-picker',isCity);
@@ -210,6 +210,14 @@
       trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','control-dialog');trigger.setAttribute('aria-expanded','false');
       field.classList.add('native-control');field.tabIndex=-1;field.setAttribute('aria-hidden','true');field.after(trigger);triggers.set(field,trigger);
       trigger.addEventListener('click',()=>open(field,trigger));
+      const cell = field.closest('.search-cell');
+      cell.classList.add('search-cell-selectable');
+      cell.addEventListener('click',event=>{
+        if(trigger.contains(event.target))return;
+        // Не передаём клик label скрытому нативному полю.
+        event.preventDefault();
+        open(field,trigger);
+      });
       field.addEventListener('invalid',event=>{event.preventDefault();if(!dialog.open)open(field,trigger);});
     }
     document.querySelector('#close-control').addEventListener('click',close);

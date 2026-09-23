@@ -321,6 +321,13 @@ label {
 .search-cell:focus-within::before,.search-cell:hover::before {
   opacity:0
 }
+.search-cell-selectable {cursor:pointer}
+.search-cell-selectable:has(.control-trigger:focus-visible) {
+  outline:2px solid var(--focus);
+  outline-offset:3px;
+}
+.search-cell-selectable .control-trigger:focus-visible {outline:none}
+.budget-cell {cursor:text}
 input,select {
   height:46px;
   border:1px solid var(--line);
