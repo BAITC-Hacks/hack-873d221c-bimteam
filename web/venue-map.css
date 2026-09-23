@@ -1,0 +1,90 @@
+/* Карта занимает ту же сетку и использует палитру выбранной темы. */
+.venue-view-tools {display:flex;justify-content:space-between;align-items:center;gap:24px;margin:24px 0}
+.venue-view-tools>p {font:500 26px/1.3 var(--serif)}
+.venue-view-tools>p span {display:block;font:11px/1.6 var(--sans);color:var(--muted);margin-top:4px}
+.venue-view-switch {display:flex;flex-shrink:0;border:1px solid var(--line);padding:4px;border-radius:32px;background:var(--surface)}
+.venue-view-switch button {display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border:0;border-radius:24px;background:transparent;font-size:12px;font-weight:700}
+.venue-view-switch [aria-pressed="true"] {background:var(--ink);color:var(--bg)}
+.venue-view-switch svg {width:18px;height:18px}
+#venue-map-home:empty {display:none}
+#venue-results-layout.map-visible {display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);align-items:start;gap:32px}
+.map-visible #venue-map-home {grid-column:2;grid-row:1;position:sticky;top:108px;min-width:0}
+.map-visible #results {grid-column:1;grid-row:1;grid-template-columns:1fr;gap:32px}
+.map-visible #results .card {padding-bottom:28px;border-bottom:1px solid var(--line)}
+.map-visible #results .card-cover {height:156px}
+.map-visible #results .card .avatar {display:none}
+.map-visible #results .card.is-map-selected {border-color:var(--accent)}
+.card-map-link {display:flex;align-items:center;gap:8px;width:100%;min-height:44px;margin-top:16px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:11px;text-align:left}
+.card-map-link:hover,.card-map-link[aria-pressed="true"] {border-color:var(--accent);background:var(--soft);color:var(--ink)}
+.card-map-link small {margin-left:auto;font-size:9px;color:var(--muted)}
+.venue-map-panel {min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:var(--shadow)}
+.map-disclosure {padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.map-disclosure strong {flex-shrink:0;color:var(--accent);font-size:9px;letter-spacing:1.2px;border:1px solid var(--line);padding:5px 8px;border-radius:6px}
+.map-disclosure p {color:var(--muted);font-size:10px;line-height:1.5}
+.map-stage {height:clamp(380px,52vh,580px);position:relative;isolation:isolate;background:var(--surface-2)}
+#venue-map {width:100%;height:100%;font-family:var(--sans);background:var(--surface-2);z-index:0}
+#venue-map:focus-visible {outline:3px solid var(--focus);outline-offset:-4px}
+.map-actions {position:absolute;top:16px;right:16px;display:grid;gap:10px;z-index:2}
+.map-actions button {display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.map-actions button:hover {background:var(--soft)}
+.map-zoom {overflow:hidden;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.map-zoom button {font-size:24px;font-weight:400;border:0;border-radius:0;box-shadow:none}
+.map-zoom button+button {border-top:1px solid var(--line)}
+.map-footer {min-height:52px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);background:var(--surface)}
+.map-footer p {font-size:10px;color:var(--muted)}
+.map-footer button {border:0;background:transparent;text-decoration:underline;min-height:44px;font-size:11px;color:var(--accent)}
+.map-empty {position:absolute;z-index:1;bottom:36px;left:16px;right:16px;max-width:370px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);pointer-events:none}
+.map-empty strong {font-size:14px}
+.map-empty p {font-size:12px;line-height:1.6;color:var(--muted);margin-top:6px}
+.venue-price-pin {display:grid;place-items:center;background:none;border:0}
+.venue-price-pin>span {display:block;white-space:nowrap;padding:8px 12px;border-radius:24px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:800 12px/1.5 var(--sans);box-shadow:0 2px 4px #0003,0 4px 10px #0001;transition:background .2s,color .2s,scale .2s}
+.venue-price-pin:hover>span,.venue-price-pin.is-selected>span {background:var(--ink);border-color:var(--ink);color:var(--bg);scale:1.06}
+.venue-price-pin:focus-visible {outline:0}
+.venue-price-pin:focus-visible>span {outline:3px solid var(--focus);outline-offset:3px}
+.venue-popup .leaflet-popup-content-wrapper,.venue-popup .leaflet-popup-tip {background:var(--surface);color:var(--ink);box-shadow:var(--float-shadow)}
+.venue-popup .leaflet-popup-content-wrapper {padding:0;border-radius:16px;overflow:hidden}
+.venue-popup .leaflet-popup-content {margin:0;width:240px!important;line-height:1.6}
+.venue-popup .leaflet-popup-close-button {background:var(--surface);color:var(--ink);border-radius:50%;top:8px;right:8px;width:28px;height:28px}
+.map-popup-cover {height:90px;background-color:var(--art-bg);background-position:center 50%;background-size:cover;position:relative}
+.map-popup-cover span {position:absolute;bottom:6px;left:10px;background:var(--surface);border-radius:4px;padding:2px 5px;color:var(--muted);font-size:8px}
+.map-popup-body {padding:14px 16px}
+.map-popup-body h3 {font:700 15px/1.4 var(--sans);text-wrap:wrap}
+.map-popup-body p {margin:5px 0;color:var(--muted);font-size:11px}
+.map-popup-body .map-popup-price {font-size:16px;font-weight:800;color:var(--ink)}
+.map-popup-body button {margin-top:8px;border:0;border-radius:9px;background:var(--accent);color:var(--on-accent);padding:10px 14px;min-height:44px;width:100%;font-size:12px;font-weight:700}
+.leaflet-container .leaflet-control-attribution {background:var(--surface);color:var(--ink);font-size:9px;max-width:100%;padding:2px 6px}
+.leaflet-container .leaflet-control-attribution a {color:var(--ink);text-decoration:underline}
+.leaflet-container .leaflet-control-attribution svg {display:none}
+#venue-map .leaflet-tile-pane {filter:saturate(.5)}
+[data-design="signal"] #venue-map .leaflet-tile-pane {filter:invert(.88) hue-rotate(170deg) saturate(.45) brightness(.8)}
+.venue-map-dialog {width:calc(100vw - 64px);max-width:1440px;max-height:calc(100dvh - 48px);padding:24px;border:1px solid var(--line);border-radius:28px;background:var(--bg);color:var(--ink);box-shadow:var(--float-shadow)}
+.venue-map-dialog::backdrop {background:var(--overlay)}
+.map-dialog-heading {display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.map-dialog-heading h2 {font:500 32px/1.1 var(--serif)}
+.map-dialog-heading button {width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--surface);font-size:24px}
+.venue-map-dialog .map-stage {height:calc(100dvh - 280px);min-height:240px}
+.venue-map-dialog #map-expand {display:none}
+body:has(.venue-map-dialog[open]) {overflow:hidden}
+@media(max-width:1000px) {
+  #venue-results-layout.map-visible {grid-template-columns:minmax(240px,.8fr) minmax(0,1fr);gap:24px}
+  .map-disclosure {align-items:flex-start;flex-direction:column;gap:6px;padding:12px 16px}
+}
+@media(max-width:700px) {
+  .venue-view-tools {align-items:flex-start;gap:16px;flex-direction:column}
+  .venue-view-tools>p {font-size:25px}
+  .venue-view-switch {align-self:stretch;justify-content:center}
+  .venue-view-switch button {flex:1;justify-content:center}
+  #venue-results-layout.map-visible {display:flex;flex-direction:column;gap:24px}
+  .map-visible #venue-map-home {position:static;width:100%}
+  .map-visible #results {width:100%;gap:28px}
+  .map-stage {height:400px}
+  .map-disclosure {padding:14px 16px}
+  .map-actions {top:12px;right:12px}
+  .venue-map-panel {border-radius:20px}
+  .venue-map-dialog {margin:auto;width:calc(100vw - 16px);max-width:none;max-height:calc(100dvh - 16px);padding:12px;border-radius:20px}
+  .venue-map-dialog .map-stage {height:calc(100dvh - 246px);min-height:200px}
+  .map-dialog-heading h2 {font-size:24px}
+  .venue-price-pin>span {font-size:11px;padding:8px 10px}
+  .map-visible #results .card-cover {height:180px}
+}
+@media(prefers-reduced-motion:reduce) {.venue-price-pin>span {transition:none}}

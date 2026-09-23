@@ -116,10 +116,12 @@ async function init() {
     message(error.message, 'error');
     $('#catalog-note').textContent = 'Параметры каталога недоступны.';
     $('#reload').hidden = false;
-  } finally { waiting(false); }
+  } finally { waiting(false); document.dispatchEvent(new CustomEvent('recommend:ready')); }
 }
 function renderCard(card, index, query) {
   const article = node('article', undefined, 'card');
+  article.dataset.contractorId = card.id;
+  article.tabIndex = -1;
   const art = /флор|декорат/i.test(card.category) ? 'florist' : /фото|видео/i.test(card.category) ? 'photo' : /зал|площад|ресторан|отель/i.test(card.category) ? 'venue' : 'host';
   const cover = node('div', undefined, `card-cover art-${art}`);
   cover.append(node('span','Подходит по условиям','cover-label'),node('span','Иллюстрация категории','cover-caption'));
@@ -180,6 +182,7 @@ form.addEventListener('submit',async event=>{
   $('#query-summary').textContent = `${payload.city} · ${payload.category} · ${payload.event_format} · ${dateLabel(payload.date)} · до ${money(payload.budget)} ₸${payload.language ? ' · '+payload.language : ''}${payload.duration_hours ? ' · '+payload.duration_hours+' ч' : ''}`;
   $('#query-summary').hidden = false;
   waiting(true); message('Проверяем календарь, бюджет и остальные условия…','loading');
+  document.dispatchEvent(new CustomEvent('recommend:start', {detail:{query:payload}}));
   try {
     const data = await request('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!['ok','no_matches','no_category_in_city'].includes(data.status) || typeof data.message !== 'string' || !Array.isArray(data.results) || data.results.length>3 || (data.status==='ok') !== (data.results.length>0) || !data.results.every(card=>typeof card.name==='string' && typeof card.explanation==='string' && Number.isFinite(card.price_from_kzt))) throw new Error('Не удалось прочитать результат подбора. Повторите запрос.');
@@ -194,16 +197,19 @@ form.addEventListener('submit',async event=>{
       if(Number.isInteger(count) && count>0) reasons.append(node('span',`${label} · ${count}`));
     }
     $('#rejections').hidden = !reasons.childElementCount;
+    document.dispatchEvent(new CustomEvent('recommend:success', {detail:{query:payload, cards:data.results}}));
   } catch(error) {
     results.replaceChildren(); $('#result-count').textContent = 'Нет ответа';
     message(error.message,'error');
     empty('Не удалось завершить подбор','Ваши условия сохранены. Нажмите «Подобрать подрядчиков», чтобы повторить запрос.');
+    document.dispatchEvent(new CustomEvent('recommend:error'));
   } finally { waiting(false); }
 });
 form.addEventListener('input',event=>{
   event.target.removeAttribute('aria-invalid');
   saveConditions(); updateDateButtons();
   if(!$('#query-summary').hidden && !busy) message('Условия изменены. Нажмите «Подобрать подрядчиков», чтобы обновить результат.');
+  document.dispatchEvent(new CustomEvent('recommend:dirty'));
 });
 function shiftDate(days) {
   if (busy || !ready) return;
@@ -233,10 +239,12 @@ $('#reset-filters').addEventListener('click', () => {
   try { localStorage.removeItem(storageKey); $('#saved-note').textContent = 'Сохранённые условия удалены.'; }
   catch { $('#saved-note').textContent = 'Условия сброшены в форме. Хранилище браузера недоступно.'; }
   updateDateButtons();
+  document.dispatchEvent(new CustomEvent('recommend:reset'));
 });
 presets.forEach(button=>button.addEventListener('click',()=>{
   if(busy || !ready) return;
-  const values = {city:'Алматы',category:button.dataset.preset==='florist'?'Флорист':'Ведущий',event_format:'корпоратив',date:'2026-10-10',budget:button.dataset.preset==='empty'?'0':'1000000',language:'',duration_hours:''};
+  const venue = button.dataset.preset === 'venue';
+  const values = {city:'Алматы',category:venue?'Банкетный зал':button.dataset.preset==='florist'?'Флорист':'Ведущий',event_format:venue?'свадьба':'корпоратив',date:'2026-10-10',budget:venue?'6000000':button.dataset.preset==='empty'?'0':'1000000',language:'',duration_hours:''};
   for(const [field,value] of Object.entries(values)) {
     const input = form.elements.namedItem(field);
     if(input instanceof HTMLSelectElement && ![...input.options].some(option=>option.value===value)) { message('Этот пример недоступен в текущем каталоге. Выберите условия вручную.','error'); return; }
