@@ -120,6 +120,10 @@ async function init() {
 }
 function renderCard(card, index, query) {
   const article = node('article', undefined, 'card');
+  const art = /флор|декорат/i.test(card.category) ? 'florist' : /фото|видео/i.test(card.category) ? 'photo' : /зал|площад|ресторан|отель/i.test(card.category) ? 'venue' : 'host';
+  const cover = node('div', undefined, `card-cover art-${art}`);
+  cover.append(node('span','Подходит по условиям','cover-label'),node('span','Иллюстрация категории','cover-caption'));
+  article.append(cover);
   const header = node('div', undefined, 'card-head');
   const avatar = node('div', card.name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join(''), 'avatar');
   avatar.setAttribute('aria-hidden','true');
@@ -151,7 +155,7 @@ function renderCard(card, index, query) {
     quote.append(node('strong','ИЗ ПРОФИЛЯ'),document.createTextNode(card.profile_excerpt));
     const details = node('details', undefined, 'profile-details');
     const summary = node('summary','Подробнее — выдержка из профиля');
-    summary.setAttribute('aria-label', `Подробнее о ${card.name}: выдержка из профиля`);
+    summary.setAttribute('aria-label', `Профиль ${card.name}: подробнее`);
     details.append(summary,quote); article.append(details);
   }
   const notes = node('div',undefined,'data-notes');

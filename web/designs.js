@@ -1,7 +1,7 @@
 // Переключение меняет только оформление, не форму, запросы или результаты.
 (() => {
   const descriptions = {
-    atelier: 'Тёплая палитра, журнальная типографика, спокойные карточки.',
+    atelier: 'Светлый каталог, тёплые акценты и удобный поиск.',
     signal: 'Графитовый фон, лаймовый акцент, чёткая геометрия.'
   };
   function applyDesign(design) {
@@ -11,7 +11,7 @@
     document.querySelectorAll('[data-design-choice]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.designChoice === design));
     });
-    document.querySelector('meta[name="theme-color"]').content = design === 'signal' ? '#111720' : '#f5f0e7';
+    document.querySelector('meta[name="theme-color"]').content = design === 'signal' ? '#111720' : '#ffffff';
   }
   let saved = 'atelier';
   try { saved = localStorage.getItem('bimteam.design') || saved; } catch { /* Хранилище необязательно. */ }
