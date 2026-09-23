@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from core.catalog import ROOT, load_catalog
 from core.recommend import Query, recommend, START, END
-from core.nvidia import enrich
+from core.ai import enrich
 
 
 app = FastAPI(title="Сервис подрядчиков")
