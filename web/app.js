@@ -9,6 +9,44 @@ const money = value => Number(value).toLocaleString('ru-RU');
 const dateLabel = value => value.split('-').reverse().join('.');
 let ready = false;
 let busy = false;
+const storageKey = 'bimteam.search.v1';
+const savedFields = ['city','category','event_format','date','budget','duration_hours','language'];
+let defaults = {};
+function values() {
+  return Object.fromEntries(savedFields.map(key => [key, form.elements.namedItem(key).value]));
+}
+function saveConditions() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(values()));
+    $('#saved-note').textContent = 'Условия сохранены в этом браузере.';
+  } catch { $('#saved-note').textContent = 'Сохранение недоступно. Подбор продолжает работать.'; }
+}
+function restoreConditions() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey));
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return false;
+    let restored = false;
+    for (const key of savedFields) {
+      const input = form.elements.namedItem(key);
+      const value = saved[key];
+      if (typeof value !== 'string') continue;
+      if (input instanceof HTMLSelectElement && ![...input.options].some(option => option.value === value)) continue;
+      if (key === 'date' && (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value < input.min || value > input.max || Number.isNaN(Date.parse(value)) || new Date(value).toISOString().slice(0,10) !== value)) continue;
+      if (key === 'budget' && (!/^\d+$/.test(value) || Number(value) > 1000000000)) continue;
+      if (key === 'duration_hours' && value !== '' && (!Number.isFinite(Number(value)) || Number(value) < 0.1 || Number(value) > 100)) continue;
+      input.value = value;
+      restored = true;
+    }
+    $('.extra-fields').open = Boolean(form.elements.language.value || form.elements.duration_hours.value);
+    return restored;
+  } catch { return false; }
+}
+function updateDateButtons() {
+  const date = form.elements.namedItem('date');
+  const valid = date.value && date.value >= date.min && date.value <= date.max;
+  $('#previous-day').disabled = busy || !ready || !valid || date.value <= date.min;
+  $('#next-day').disabled = busy || !ready || !valid || date.value >= date.max;
+}
 function node(tag, text, className) {
   const item = document.createElement(tag);
   if (text !== undefined) item.textContent = text;
@@ -22,6 +60,7 @@ function waiting(value) {
   presets.forEach(button => { button.disabled = value || !ready; });
   $('.results-panel').setAttribute('aria-busy', String(value));
   $('#submit span').textContent = value ? 'Проверяем совпадения…' : 'Подобрать подрядчиков';
+  updateDateButtons();
 }
 function empty(title, copy) {
   $('#empty-state').hidden = false;
@@ -69,8 +108,10 @@ async function init() {
     date.min = data.date_min; date.max = data.date_max;
     date.value = '2026-10-10' >= data.date_min && '2026-10-10' <= data.date_max ? '2026-10-10' : data.date_min;
     $('#catalog-note').textContent = `Календарь: ${dateLabel(data.date_min)} — ${dateLabel(data.date_max)}`;
+    defaults = values();
+    const restored = restoreConditions();
     ready = true;
-    message('Задайте условия или начните с примера.');
+    message(restored ? 'Условия восстановлены. Нажмите «Подобрать подрядчиков», чтобы проверить актуальный результат.' : 'Задайте условия или начните с примера.');
   } catch(error) {
     message(error.message, 'error');
     $('#catalog-note').textContent = 'Параметры каталога недоступны.';
@@ -79,6 +120,10 @@ async function init() {
 }
 function renderCard(card, index, query) {
   const article = node('article', undefined, 'card');
+  const art = /флор|декорат/i.test(card.category) ? 'florist' : /фото|видео/i.test(card.category) ? 'photo' : /зал|площад|ресторан|отель/i.test(card.category) ? 'venue' : 'host';
+  const cover = node('div', undefined, `card-cover art-${art}`);
+  cover.append(node('span','Подходит по условиям','cover-label'),node('span','Иллюстрация категории','cover-caption'));
+  article.append(cover);
   const header = node('div', undefined, 'card-head');
   const avatar = node('div', card.name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join(''), 'avatar');
   avatar.setAttribute('aria-hidden','true');
@@ -89,11 +134,29 @@ function renderCard(card, index, query) {
   const price = node('div',undefined,'price');
   price.append(node('small','от '),document.createTextNode(`${money(card.price_from_kzt)} ₸`));
   priceRow.append(price,node('span',`Свободен ${dateLabel(query.date)}`,'date-badge'));
-  article.append(header,priceRow,node('p','ПОЧЕМУ ПОДХОДИТ','explanation-title'),node('p',card.explanation,'explanation'));
+  article.append(header,priceRow,node('p','Подходит по заданным условиям','match-badge'),node('p','ПОЧЕМУ ПОДХОДИТ','explanation-title'),node('p',card.explanation,'explanation'));
+  const facts = node('ul', undefined, 'card-facts');
+  const budgetFact = card.price_from_kzt <= query.budget
+    ? `Цена от ${money(card.price_from_kzt)} ₸ при бюджете ${money(query.budget)} ₸`
+    : 'Итоговую стоимость нужно уточнить';
+  for (const text of [budgetFact, `Формат: ${query.event_format}${query.language ? ' · язык: '+query.language : ''}`]) {
+    const fact = node('li');
+    const icon = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    icon.setAttribute('viewBox','0 0 24 24'); icon.setAttribute('class','line-icon');
+    icon.setAttribute('fill','none'); icon.setAttribute('stroke','currentColor');
+    icon.setAttribute('stroke-width','1.5'); icon.setAttribute('aria-hidden','true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','m5 12 4 4L19 6'); icon.append(path);
+    fact.append(icon,node('span',text)); facts.append(fact);
+  }
+  article.append(facts);
   if(card.profile_excerpt) {
     const quote = node('blockquote',undefined,'profile-quote');
     quote.append(node('strong','ИЗ ПРОФИЛЯ'),document.createTextNode(card.profile_excerpt));
-    article.append(quote);
+    const details = node('details', undefined, 'profile-details');
+    const summary = node('summary','Подробнее — выдержка из профиля');
+    summary.setAttribute('aria-label', `Профиль ${card.name}: подробнее`);
+    details.append(summary,quote); article.append(details);
   }
   const notes = node('div',undefined,'data-notes');
   notes.append(node('span',card.synthetic ? 'Синтетический профиль' : 'Исходный профиль · имя изменено',card.synthetic ? 'synthetic' : ''));
@@ -106,6 +169,7 @@ const reasonNames = {busy:'Заняты на дату',budget:'Дороже бю
 form.addEventListener('submit',async event=>{
   event.preventDefault();
   if(busy || !ready || !form.reportValidity()) return;
+  saveConditions();
   const payload = Object.fromEntries(new FormData(form));
   payload.budget = Number(payload.budget);
   payload.duration_hours = payload.duration_hours ? Number(payload.duration_hours) : null;
@@ -138,7 +202,37 @@ form.addEventListener('submit',async event=>{
 });
 form.addEventListener('input',event=>{
   event.target.removeAttribute('aria-invalid');
+  saveConditions(); updateDateButtons();
   if(!$('#query-summary').hidden && !busy) message('Условия изменены. Нажмите «Подобрать подрядчиков», чтобы обновить результат.');
+});
+function shiftDate(days) {
+  if (busy || !ready) return;
+  const input = form.elements.namedItem('date');
+  if (!input.value || !input.checkValidity()) { input.reportValidity(); return; }
+  const date = new Date(input.value + 'T00:00:00Z');
+  date.setUTCDate(date.getUTCDate() + days);
+  const next = date.toISOString().slice(0,10);
+  if (next < input.min || next > input.max) return;
+  input.value = next;
+  saveConditions(); updateDateButtons();
+  // Новая дата — новый запрос. Остальные ограничения сохраняются.
+  form.requestSubmit();
+}
+$('#previous-day').addEventListener('click', () => shiftDate(-1));
+$('#next-day').addEventListener('click', () => shiftDate(1));
+$('#reset-filters').addEventListener('click', () => {
+  if (busy || !ready) return;
+  Object.entries(defaults).forEach(([key,value]) => { form.elements.namedItem(key).value = value; });
+  form.querySelectorAll('[aria-invalid]').forEach(input => input.removeAttribute('aria-invalid'));
+  $('.extra-fields').open = false;
+  results.replaceChildren(); $('#rejections').hidden = true; $('#query-summary').hidden = true;
+  $('#result-count').textContent = 'до 3 вариантов';
+  empty('Найдём тех, кто подходит','Выберите условия. Здесь появится короткий список с конкретными причинами — почему именно эти подрядчики.');
+  $('.steps').hidden = false;
+  message('Условия сброшены. Можно начать новый подбор.');
+  try { localStorage.removeItem(storageKey); $('#saved-note').textContent = 'Сохранённые условия удалены.'; }
+  catch { $('#saved-note').textContent = 'Условия сброшены в форме. Хранилище браузера недоступно.'; }
+  updateDateButtons();
 });
 presets.forEach(button=>button.addEventListener('click',()=>{
   if(busy || !ready) return;

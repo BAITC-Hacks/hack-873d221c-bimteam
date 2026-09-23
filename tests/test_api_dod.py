@@ -177,8 +177,14 @@ def test_legacy_error_fields_use_form_names(client):
 
 
 def test_options_health_demo_static_and_openapi(client):
-    for path in ('/', '/web/app.js', '/web/styles.css', '/docs', '/openapi.json', '/health'):
+    for path in ('/', '/web/app.js', '/web/styles.css', '/web/enhancements.js',
+                 '/web/designs.js', '/web/editorial.css', '/web/city-picker.css',
+                 '/web/favicon.svg', '/web/art/host.svg', '/web/art/florist.svg',
+                 '/web/art/photo.svg', '/web/art/venue.svg',
+                 '/web/media/celebration-editorial.jpg', '/docs', '/openapi.json', '/health'):
         assert client.get(path).status_code == 200
+    assert '<title>Той таңдау · BIMteam</title>' in client.get('/').text
+    assert client.get('/web/media/celebration-editorial.jpg').headers['content-type'] == 'image/jpeg'
     assert client.get('/api/health').json() == {'ok': True, 'llm_provider': 'none', 'profiles': 66}
     options = client.get('/api/options').json()
     for field in ('cities', 'categories', 'event_formats', 'event_types', 'languages'):

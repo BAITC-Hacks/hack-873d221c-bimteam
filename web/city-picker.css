@@ -1,0 +1,72 @@
+/* Выбор города: список направлений у поля поиска. */
+:root {
+  --city-mountain:#947039;
+  --city-mountain-bg:#f5f0e5;
+  --city-capital:#bd6551;
+  --city-capital-bg:#fcf0eb;
+  --city-world:#53798a;
+  --city-world-bg:#edf3f5;
+}
+[data-design=signal] {
+  --city-mountain:#dec08e;
+  --city-mountain-bg:#3c382e;
+  --city-capital:#efa890;
+  --city-capital-bg:#422f2d;
+  --city-world:#9fcddd;
+  --city-world-bg:#293d48;
+}
+.search-cell.is-selecting-city {
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.search-cell.is-selecting-city::before {opacity:0}
+.search-cell.is-selecting-city .control-trigger {color:var(--ink);font-weight:600}
+.city-picker {padding:24px;border-radius:28px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.city-picker::-webkit-scrollbar {width:5px}
+.city-picker::-webkit-scrollbar-thumb {background:var(--line);border-radius:8px}
+.city-picker::backdrop {background:transparent;backdrop-filter:none}
+.city-picker .dialog-heading {margin-bottom:20px}
+.city-picker .dialog-heading h2 {font:700 18px/1.3 var(--sans);letter-spacing:-.3px}
+.city-picker .dialog-heading button {width:32px;height:32px;font-size:22px}
+.city-search-label {font-size:11px;gap:8px;margin-bottom:20px}
+.city-search-label input {height:48px;border-radius:14px;background:var(--surface-2);font-size:14px}
+.city-list-caption {font-size:11px;color:var(--muted);margin:0 0 8px}
+.city-options {display:flex;flex-direction:column;gap:4px}
+.city-option {
+  display:flex;align-items:center;gap:16px;width:100%;min-width:0;
+  background:none;border:0;border-radius:16px;padding:12px 8px;text-align:left;
+  transition:background .18s,transform .18s var(--ease);
+}
+.city-option:hover,.city-option:focus-visible {background:var(--surface-2)}
+.city-option[aria-pressed=true] {background:var(--surface-2)}
+.city-icon {display:grid;place-items:center;flex-shrink:0;width:64px;height:64px;border-radius:14px}
+.city-icon svg {width:35px;height:35px;stroke-width:1.4}
+.city-icon-mountain {color:var(--city-mountain);background:var(--city-mountain-bg)}
+.city-icon-capital {color:var(--city-capital);background:var(--city-capital-bg)}
+.city-icon-world {color:var(--city-world);background:var(--city-world-bg)}
+.city-option-copy {display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.city-option-copy strong {font-size:16px;line-height:1.3;font-weight:700}
+.city-option-copy>span {font-size:12px;line-height:1.5;color:var(--muted)}
+.city-option-check {flex-shrink:0;width:16px;color:var(--accent);font-size:17px}
+.city-no-results {font-size:13px;color:var(--muted);line-height:1.7;padding:16px 0 8px}
+@media(min-width:601px) {
+  .control-dialog.city-picker {
+    position:fixed;inset:auto;margin:0;
+    top:var(--city-top,100px);left:var(--city-left,16px);
+    width:var(--city-width,480px);max-width:calc(100vw - 32px);
+    max-height:var(--city-max-height,560px);
+    box-shadow:var(--float-shadow);transform-origin:top left;
+  }
+}
+@media(max-width:600px) {
+  .city-picker {padding:24px 20px calc(24px + env(safe-area-inset-bottom));border-radius:28px 28px 0 0}
+  .city-picker::backdrop {background:var(--overlay)}
+  .city-picker .dialog-heading h2 {font-size:19px}
+  .city-search-label input {font-size:16px}
+  .city-option {gap:12px;padding:12px 4px;min-height:84px}
+  .city-icon {width:52px;height:56px;border-radius:12px}
+  .city-icon svg {width:30px;height:30px}
+  .city-option-copy strong {font-size:15px}
+  .city-option-copy>span {font-size:11px}
+}
+@media(prefers-reduced-motion:reduce) {.city-option{transition:none}}
