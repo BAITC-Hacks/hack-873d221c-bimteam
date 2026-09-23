@@ -55,7 +55,7 @@ def test_optional_constraint_hint_is_verified(base, field, value, label):
     req = request_model(**{field: value})
     assert not filter_contractors(req, [base]).eligible
     hints = make_hints(req, [base], 0)
-    assert any(f'по {label}' in hint and '1 профилей вместо 0' in hint for hint in hints)
+    assert any(f'по {label}' in hint and 'профилей: 1 вместо 0' in hint for hint in hints)
     assert len(filter_contractors(req.model_copy(update={field: None}), [base]).eligible) == 1
 
 

@@ -18,7 +18,7 @@ def make_hints(req: RecommendRequest, rows: list[Contractor], current_count: int
             if DATE_MIN <= day <= DATE_MAX:
                 count = len(filter_contractors(req.model_copy(update={'date': day}), rows).eligible)
                 if count > current_count:
-                    hints.append(f'На ближайшую подходящую дату {day:%d.%m.%Y} подходят {count} профилей при тех же условиях.')
+                    hints.append(f'На ближайшую подходящую дату {day:%d.%m.%Y} подходящих профилей: {count}; условия те же.')
                     break
         if hints:
             break
@@ -29,10 +29,10 @@ def make_hints(req: RecommendRequest, rows: list[Contractor], current_count: int
         minimum = prices[0]
         count = sum(c.price_from_kzt <= minimum for c in relaxed)
         if count > current_count:
-            hints.append(f'С бюджетом от {money(minimum)} на эту дату подходят {count} профилей; остальные условия сохранены.')
+            hints.append(f'С бюджетом от {money(minimum)} на эту дату подходящих профилей: {count}; остальные условия сохранены.')
     for field, label in (('language', 'языку'), ('duration_hours', 'длительности')):
         if getattr(req, field) is not None:
             count = len(filter_contractors(req.model_copy(update={field: None}), rows).eligible)
             if count > current_count:
-                hints.append(f'Без ограничения по {label} подходят {count} профилей вместо {current_count}.')
+                hints.append(f'Без ограничения по {label} подходящих профилей: {count} вместо {current_count}.')
     return hints[:2]

@@ -85,3 +85,17 @@ class RecommendResponse(BaseModel):
     funnel: list[Funnel]
     hints: list[str]
     elapsed_ms: int
+
+
+class LegacyResponse(BaseModel):
+    """Старый контракт web/; подсказки и воронка доступны как дополнительные поля."""
+    status: Literal['ok', 'no_category_in_city', 'no_matches']
+    message: str
+    results: list[Card]
+    candidate_count: int
+    eligible_count: int
+    rejection_summary: dict[str, int]
+    shortfall_reason: str | None
+    funnel: list[Funnel]
+    hints: list[str]
+    elapsed_ms: int

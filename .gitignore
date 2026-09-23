@@ -8,3 +8,5 @@ __pycache__
 *.rvt
 node_modules
 cache/
+data/embeddings.npy
+data/embeddings_ids.json

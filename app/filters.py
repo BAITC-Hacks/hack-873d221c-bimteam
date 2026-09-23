@@ -79,7 +79,7 @@ def result_message(result: FilterResult, req: RecommendRequest, rows: list[Contr
         return message, message
     shortfall = None
     if count < 3:
-        shortfall = (f'В каталоге для «{req.category}» и города {req.city} всего {n} профилей.'
-                     if not rejected else f'Из {n} профилей прошли {count}: {rejected}.')
-    message = f'Подходят {count} профилей; показаны {min(3, count)}.'
+        shortfall = (f'В каталоге для «{req.category}» и города {req.city} профилей всего: {n}.'
+                     if not rejected else f'Профилей в группе: {n}; прошли условия: {count}; отсев: {rejected}.')
+    message = f'Подходящих профилей: {count}; показано: {min(3, count)}.'
     return message + (' ' + shortfall if shortfall else ''), shortfall

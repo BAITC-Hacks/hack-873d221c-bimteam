@@ -64,7 +64,7 @@ def build_cards(selected: list[Contractor], eligible: list[Contractor], group: l
         if peers and c.price_from_kzt < min(p.price_from_kzt for p in peers):
             low, high = min(p.price_from_kzt for p in peers), max(p.price_from_kzt for p in peers)
             prices = money(low) if low == high else f'{money(low)}–{money(high)}'
-            facts.append(Fact(type='cheapest', text=f'Самая низкая цена от среди подходящих: {money(c.price_from_kzt)}; у остальных {prices}'))
+            facts.append(Fact(type='cheapest', text=f'Самая низкая начальная цена среди подходящих: {money(c.price_from_kzt)}; у остальных {prices}'))
         if peers and 'казахский' in c.languages and all('казахский' not in p.languages for p in peers):
             facts.append(Fact(type='unique_language', text='Единственный среди подходящих, у кого указан казахский язык'))
         if (chosen_peers and c.max_hours is not None and all(p.max_hours is not None for p in chosen_peers)
