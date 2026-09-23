@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from core.catalog import ROOT, load_catalog
 from core.recommend import Query, recommend, START, END
 from core.nvidia import enrich
+from core.venues import venue_catalog
 
 
 app = FastAPI(title="Сервис подрядчиков")
@@ -35,6 +36,11 @@ def options():
 @app.post('/api/recommend')
 async def get_recommendations(query: Query):
     return await enrich(recommend(query, catalog), query, catalog)
+
+
+@app.get('/api/venues')
+def get_venues(city: str | None = None):
+    return venue_catalog(catalog, city)
 
 
 @app.get("/health")

@@ -3,6 +3,7 @@ from collections import Counter
 from datetime import date
 from pydantic import BaseModel, Field, field_validator
 from core.explanations import explanation, profile_evidence
+from core.venues import VENUE_CATEGORIES, venue_name
 
 START = date(2026, 9, 23)
 END = date(2026, 12, 31)
@@ -64,6 +65,7 @@ def recommend(query, catalog):
         excerpt = profile_evidence(row['description'], query)
         results.append({
             'id': row['id'], 'name': row['anon_name'], 'category': query.category,
+            **({'venue_name': venue_name(row)} if query.category in VENUE_CATEGORIES else {}),
             'city': row['city'], 'price_from_kzt': row['price_from_kzt'],
             'synthetic': row['synthetic'], 'city_imputed': row['city_imputed'],
             'price_imputed': row['price_imputed'],

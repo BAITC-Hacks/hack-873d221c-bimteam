@@ -56,6 +56,7 @@
 .leaflet-container .leaflet-control-attribution a {color:var(--ink);text-decoration:underline}
 .leaflet-container .leaflet-control-attribution svg {display:none}
 #venue-map .leaflet-tile-pane {filter:saturate(.5)}
+#venue-map .leaflet-overlay-pane>svg {width:revert;height:revert}
 [data-design="signal"] #venue-map .leaflet-tile-pane {filter:invert(.88) hue-rotate(170deg) saturate(.45) brightness(.8)}
 .venue-map-dialog {width:calc(100vw - 64px);max-width:1440px;max-height:calc(100dvh - 48px);padding:24px;border:1px solid var(--line);border-radius:28px;background:var(--bg);color:var(--ink);box-shadow:var(--float-shadow)}
 .venue-map-dialog::backdrop {background:var(--overlay)}
@@ -88,3 +89,42 @@ body:has(.venue-map-dialog[open]) {overflow:hidden}
   .map-visible #results .card-cover {height:180px}
 }
 @media(prefers-reduced-motion:reduce) {.venue-price-pin>span {transition:none}}
+
+/* Обзор всего каталога отделён от рекомендаций с проверкой условий. */
+.venue-browse {display:flex;align-items:center;gap:12px;min-height:48px;margin-top:16px;padding:12px 18px;border:1px solid var(--line);border-radius:16px;background:var(--surface);font-size:12px;font-weight:700;text-align:left}
+.venue-browse:hover {background:var(--soft);border-color:var(--accent)}
+.venue-browse>span {margin-left:auto;font-size:18px}
+.browsing-venues>.results-heading,.browsing-venues>.presets,.browsing-venues>#query-summary,.browsing-venues>#status,.browsing-venues>#empty-state,.browsing-venues>.skeletons,.browsing-venues>#rejections,.browsing-venues #results {display:none!important}
+.browsing-venues .venue-view-tools>p {display:none}
+.browsing-venues .venue-view-tools {justify-content:flex-end}
+.venue-catalog-intro {margin-bottom:24px;scroll-margin-top:100px}
+.venue-catalog-intro h2 {font:500 40px/1.1 var(--serif);margin:10px 0 16px}
+#venue-catalog-summary {font-size:14px;font-weight:700}
+.venue-catalog-note {max-width:720px;color:var(--muted);font-size:12px;line-height:1.8;margin:10px 0}
+.venue-catalog-intro .text-button {margin-top:8px}
+.browsing-venues .map-stage {height:480px}
+#venue-catalog {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.map-visible #venue-catalog {grid-column:1;grid-row:1;grid-template-columns:1fr;gap:16px}
+.venue-catalog-card {padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface);min-width:0;scroll-margin-block:110px;transition:border-color .2s,box-shadow .2s}
+.venue-catalog-card.is-map-selected {border-color:var(--accent);box-shadow:var(--shadow)}
+.venue-catalog-card:focus-visible {outline:2px solid var(--focus);outline-offset:3px}
+.venue-catalog-heading {display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.venue-catalog-heading h3 {font-size:17px;line-height:1.4;text-wrap:wrap}
+.venue-order {display:grid;place-items:center;flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--accent);font-size:10px;font-weight:800}
+.venue-catalog-price {font-size:22px;font-weight:800;margin:14px 0 4px;letter-spacing:-.5px}
+.venue-budget-note {font-size:11px;color:var(--muted)}
+.venue-description {font-size:12px;line-height:1.8;color:var(--muted);padding-top:12px}
+.venue-data-note {font-size:9px;line-height:1.6;color:var(--muted);margin-top:6px}
+.venue-price-pin>span {padding:6px 10px;border-radius:14px;min-width:126px;max-width:150px;text-align:center}
+.map-pin-name {display:block;max-width:130px;overflow:hidden;text-overflow:ellipsis;font-size:10px;font-weight:600;line-height:1.5}
+.map-pin-price {display:block;font-size:12px;line-height:1.6}
+@media(max-width:700px) {
+  #venue-catalog {grid-template-columns:1fr;width:100%}
+  .venue-browse {font-size:11px;width:100%}
+  .venue-catalog-intro h2 {font-size:32px}
+  #venue-catalog-summary {font-size:12px}
+  .venue-catalog-card {padding:20px}
+  .venue-price-pin>span {min-width:100px;max-width:124px;padding:5px 8px}
+  .map-pin-name {max-width:108px;font-size:9px}
+  .map-pin-price {font-size:10px}
+}
