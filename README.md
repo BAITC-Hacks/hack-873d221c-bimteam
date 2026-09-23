@@ -166,7 +166,16 @@ macOS/Linux: те же пять команд с `curl` вместо `curl.exe`. 
 - [x] SDK-настройки обоих провайдеров и опциональная семантика — [test_llm.py](tests/test_llm.py), [test_semantic.py](tests/test_semantic.py).
 - [ ] Проверка реального OpenAI/NVIDIA: с ключом получить `explanation_source=llm`, затем тёплый ответ <300 мс. В этой сборке проверены моки, **не доступ к вашему аккаунту**.
 
-Windows: `.\.venv\Scripts\python.exe -m pytest -q`. В активированном окружении: `pytest`. Тесты не читают ваш `.env`, не требуют ключей и не расходуют API. GitHub Actions проверяет push/PR. Установщик можно проверить без браузера: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start.ps1 -Check`.
+Windows: `.\.venv\Scripts\python.exe -m pytest -q`. В активированном окружении: `pytest`. Тесты не читают ваш `.env`, не требуют ключей и не расходуют API. Установщик можно проверить без браузера: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start.ps1 -Check`.
+
+Если Windows сообщает `PermissionError` для общей папки `Temp/pytest-of-abzal`, не меняйте её права и не удаляйте чужие файлы. Используйте отдельную папку внутри проекта и повторите тесты:
+
+```powershell
+$env:PYTEST_DEBUG_TEMPROOT = (New-Item -ItemType Directory -Force cache/pytest).FullName
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+Workflow GitHub Actions настроен на push/PR для Windows/Python 3.12 и Ubuntu/Python 3.11. **На 23.09.2026 запуск заблокирован GitHub из-за billing issue**, до выполнения тестов. Владельцу аккаунта/организации нужно решить вопрос оплаты; локально 100 тестов прошли. [Отчёт проверки и оставшиеся действия](docs/VERIFICATION.md).
 
 ## Конфигурация
 
